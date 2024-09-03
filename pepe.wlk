@@ -1,99 +1,192 @@
 object pepe {
 	
-    var sueldo = 0
+    var categoria = cadete
 
-    var categoria = "cadete"
+    var resultados = porcentaje
 
-    var resultados = "porcentaje"
+    var presentismo = normal
 
-    var presentismo = "normal"
-
-    var diasTrabajo = 0
-
-    var diasTrabajados = 0
-
-    method diasTrabajo() {
-        return diasTrabajo
-    }
-
-    method diasTrabajo(_diasTrabajo) {
-        diasTrabajo = _diasTrabajo
-    }
-
-    method diasTrabajados() {
-        return diasTrabajados
-    }
-
-    method diasTrabajados(_diasTrabajados) {
-        diasTrabajados = _diasTrabajados
-    }
-
-    method categoria() {
-        return categoria
-    }
+    var faltas = 0
 
     method categoria(_categoria) {
         categoria = _categoria
     }
 
-    method sueldo() {
-        sueldo = self.neto() +
-        (self.bonoXResultados()) +
-        (self.bonoXPresentismo())
-    }
-
-    method valorCategoria() {
-        return if (self.categoria() == "cadete") 20000 
-        else (15000)
-    }
-
-    method neto() {
-        return self.valorCategoria()
-    }
-
-    method resultados() {
-        return resultados
-    } 
-
     method resultados(_resultados) {
         resultados = _resultados
-    }
-
-    method bonoXResultados() {
-        return if (self.resultados() == "porcentaje") (1000 / self.neto())
-        else if (self.resultados() == "montoFijo") (800)
-        else 0
-    }
-
-    method presentismo() {
-        return presentismo
     }
 
     method presentismo(_presentismo) {
         presentismo = _presentismo
     }
 
-    method calcNormal() {
-        return if (self.diasTrabajo() == self.diasTrabajados()) (2000)
-          else if ((self.diasTrabajo() - 1) == self.diasTrabajados()) (1000)
-          else 0
+    method faltas(_faltas) {
+        faltas = _faltas
     }
 
-    method calcAjuste() {
-        return if (self.diasTrabajo() == self.diasTrabajados()) (100)
-        else 0
+    method faltas() {
+        return faltas
     }
 
-    method calcDemagogico() {
-        return if (self.neto() < 18000) (500)
+    method sueldo() {
+        return self.neto() +
+               self.bonoResultados() +
+               self.bonoPresentismo()
+    }
+
+    method neto() {
+        return categoria.neto()
+    }
+
+    method bonoResultados() {
+        return resultados.valor(self)
+    }
+
+    method bonoPresentismo() {
+        return presentismo.valor(self)
+    }
+
+}
+
+object sofia {
+
+    var categoria = cadete
+
+    var resultados = porcentaje
+
+    method categoria(_categoria) {
+        categoria = _categoria
+    }
+
+    method resultados(_resultados) {
+        resultados = _resultados
+    }
+
+    method sueldo() {
+        return self.neto() +
+               self.bonoResultados()
+    }
+
+    method neto() {
+        return categoria.neto() * 1.3
+    }
+
+    method bonoResultados() {
+        return resultados.valor(self)
+    }
+}
+
+
+//Categorias
+object cadete {
+
+    var valor = 20000
+
+    method neto() {
+        return valor
+    }
+
+    method valor(_valor) {
+        valor = _valor
+    }
+
+    method valor() {
+        return valor
+    }
+}
+
+object gerente {
+
+    var valor = 15000
+
+    method neto() {
+        return valor
+    }
+
+    method valor(_valor) {
+        valor = _valor
+    }
+
+    method valor() {
+        return valor
+    }
+}
+
+object vendedor {
+
+    var valor = 16000
+
+    var aumentoPorMuchasVentas = 1
+
+    method valor(_valor) {
+        valor = _valor
+    }
+
+    method valor() {
+        return valor
+    }
+
+    method aumentoPorMuchasVentas() {
+        return aumentoPorMuchasVentas
+    }
+
+    method activarAumentoPorMuchasVentas() {
+        aumentoPorMuchasVentas = 1.25
+    }
+
+    method desactivarAumentoPorMuchasVentas() {
+        aumentoPorMuchasVentas = 1
+    }
+
+    method neto() {
+        return valor * (self.aumentoPorMuchasVentas())
+    }
+}
+
+object medioTiempo {
+    
+    method categoriaBase(categoria) {
+        categoria.valor(categoria.valor() / 2)
+    }
+}
+
+//Resultados
+object porcentaje {
+    method valor(empleado) {
+        return (empleado.neto() * 0.1)
+    }
+}
+
+object fijo {
+    method valor(empleado) {
+        return 800
+    }
+}
+
+object nulo { // Me sirve tambien para el de presentismo
+    method valor(empleado) {
+        return 0
+    }
+}
+
+
+//Presentismo
+
+object normal {
+    method valor(empleado) {
+        return (2000 - (empleado.faltas() * 1000)).max(0)
+    }
+}
+
+object ajuste {
+    method valor(empleado) {
+        return (100 - (empleado.faltas() * 100)).max(0)
+    }
+}
+
+object demagogico {
+    method valor(empleado) {
+        return if (empleado.neto() < 18000) 500
         else 300
-    }
-
-    method bonoXPresentismo() {
-        return if (self.presentismo() == "normal") (self.calcNormal())
-          else if (self.presentismo() == "ajuste") (self.calcAjuste())
-          else if (self.presentismo() == "demagogico") (self.calcDemagogico())
-          else 0
-
     }
 }
