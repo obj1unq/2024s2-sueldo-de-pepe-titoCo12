@@ -1,10 +1,39 @@
 import pepe.*
 
 describe "Sueldo Pepe" {
-	
-	test "Test 1" {
-		//TODO: Implementame
+
+	test "Pepe cadete con bono de resultado fijo y presentismo normal. falto 3 días" {
+		pepe.categoria(cadete)
+		pepe.resultados(fijo)
+		pepe.presentismo(normal)
+		pepe.faltas(3)
+
+		assert.equals(20800, pepe.sueldo())
 	}
 
-	
+	test "Pepe gerente con bono resultado porcentaje y presentismo nulo" {
+		pepe.categoria(gerente)
+		pepe.resultados(porcentaje)
+		pepe.presentismo(nulo)
+
+		assert.equals(16500, pepe.sueldo())
+	}
+
+	test "pepe cadete con bono resultado porcentaje y presentismo normal, sin faltas" {
+		pepe.categoria(cadete)
+		pepe.resultados(porcentaje)
+		pepe.presentismo(normal)
+		pepe.faltas(0)
+
+		assert.equals(24000, pepe.sueldo())
+	}
+
+	test "pepe cadete con bono resultado porcentaje y presentismo normal, falto 1 dia" {
+		pepe.categoria(cadete)
+		pepe.resultados(porcentaje)
+		pepe.presentismo(normal)
+		pepe.faltas(1)
+
+		assert.equals(23000, pepe.sueldo())
+	}
 }
